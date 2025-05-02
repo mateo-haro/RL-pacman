@@ -30,3 +30,18 @@ python train.py
 ```
 
 The trained model will be saved in the `models` directory. 
+
+## MsPacman Reward System
+
+| Action                        | Points (Reward) |
+|------------------------------|-----------------|
+| Eating a small pellet        | 10              |
+| Eating a power pellet        | 50              |
+| Eating a fruit               | 100–5000        |
+| Eating 1st ghost (after power pellet) | 200     |
+| Eating 2nd ghost             | 400             |
+| Eating 3rd ghost             | 800             |
+| Eating 4th ghost             | 1600            |
+| Clearing a level             | ~5000           |
+| Dying (losing a life)        | 0 (manual penalty recommended) |
+| Time passing (doing nothing)| 0               |

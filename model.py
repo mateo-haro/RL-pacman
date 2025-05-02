@@ -8,8 +8,10 @@ class DQN(nn.Module):
         
         self.conv = nn.Sequential(
             nn.Conv2d(input_shape[0], 16, kernel_size=8, stride=4),
+            nn.BatchNorm2d(16),
             nn.ReLU(),
             nn.Conv2d(16, 32, kernel_size=4, stride=2),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
         )
         
@@ -18,6 +20,7 @@ class DQN(nn.Module):
         self.fc = nn.Sequential(
             nn.Flatten(),
             nn.Linear(conv_out_size, 256),
+            nn.BatchNorm1d(256),
             nn.ReLU(),
             nn.Linear(256, n_actions)
         )

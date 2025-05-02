@@ -2,6 +2,4 @@
 /models
 /training_progress.png
 /__pycache__
-*.png
-*.pth
 *.yaml
