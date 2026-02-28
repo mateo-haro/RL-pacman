@@ -15,6 +15,11 @@ def create_env(render_mode, stack_size=4, resize_shape=(84, 84)):
     
     return env
 
+def create_envs(num_envs=2, render_mode='human', stack_size=4, resize_shape=(84, 84)):
+    """Create multiple environments with the same preprocessing."""
+    envs = gym.vector.AsyncVectorEnv([lambda: create_env(render_mode, stack_size, resize_shape) for _ in range(num_envs)])
+    return envs
+
 def get_state(env):
     """Get the current state from the environment."""
     state = np.array(env.get_observation())

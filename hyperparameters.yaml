@@ -1,0 +1,40 @@
+# Training Configuration
+training:
+  episodes: 70000
+  avg_param: 1000 # run evaluation and save plots and save model every N episodes
+  eval_interval: 100   # run greedy eval every N episodes
+  eval_episodes: 10    # number of greedy episodes per eval
+  eval_epsilon: 0.0    # default epsilon used in eval mode
+  train_steps_per_sim_step: 8  # training updates per simulation step
+  reward_scale: 1.0    # multiplier for environment rewards
+  life_loss_penalty_scale: 0 # multiplier for the -100 life-loss penalty
+  shaping_alpha: 0          # potential-based shaping scale
+  shaping_gamma: 0.99          # discount factor for shaping (should match agent gamma)
+
+# Environment Configuration
+environment:
+  num_envs: 256
+  stack_size: 4
+  resize_shape: [84, 84]
+  render_mode: null
+  # render_mode: 'human' #for visualization
+
+# Agent Configuration
+agent:
+  memory_size: 100000
+  batch_size: 512
+  gamma: 0.99
+  epsilon: 1.0
+  epsilon_min: 0.1
+  epsilon_decay: 0.999
+  learning_rate: 0.00025 # default is 0.00025
+  target_update_frequency: 2000
+  tau: 0.0025                     # soft update coefficient for target network 0.005 is default best is 0.0025
+  target_update_mode: soft        # 'soft' uses tau, 'hard' uses target_update_frequency
+  demo_sample_prob: 0.01          # probability of sampling from demo buffer each batch (0 = disabled)
+  per_alpha: 0.6                  # priority exponent (0 = uniform replay)
+  per_beta_start: 0.4             # initial importance-sampling correction
+  per_beta_end: 1.0               # final importance-sampling correction
+  per_beta_steps: 1000000         # anneal beta over this many updates
+  per_eps: 1.0e-5                 # epsilon added to |TD error| for priorities
+  grad_clip_norm: -1.0             # max grad norm (<=0 disables clipping)

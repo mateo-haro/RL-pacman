@@ -1,5 +1,6 @@
 /venv
+/wandb
+/best_model
 /models
 /training_progress.png
 /__pycache__
-*.yaml
