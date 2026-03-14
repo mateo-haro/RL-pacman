@@ -1,40 +1,45 @@
 # Training Configuration
 training:
-  episodes: 70000
-  avg_param: 1000 # run evaluation and save plots and save model every N episodes
-  eval_interval: 100   # run greedy eval every N episodes
-  eval_episodes: 10    # number of greedy episodes per eval
-  eval_epsilon: 0.0    # default epsilon used in eval mode
-  train_steps_per_sim_step: 8  # training updates per simulation step
-  reward_scale: 1.0    # multiplier for environment rewards
-  life_loss_penalty_scale: 0 # multiplier for the -100 life-loss penalty
-  shaping_alpha: 0          # potential-based shaping scale
-  shaping_gamma: 0.99          # discount factor for shaping (should match agent gamma)
+  episodes: 70000                     # total number of training episodes
+  avg_param: 1000                     # every N episodes: run reporting, save plots, and checkpoint model
+  eval_interval: 100                  # run greedy evaluation every N training episodes
+  eval_episodes: 10                   # number of episodes per evaluation run
+  eval_epsilon: 0.0                   # epsilon used during evaluation (0.0 = fully greedy)
+  train_steps_per_sim_step: 8         # gradient updates performed per environment step
+  reward_scale: 1.0                   # global multiplier applied to raw environment rewards
+  life_loss_penalty_scale: 1.0        # multiplier for the life-loss penalty term
+  shaping_alpha: 0                    # strength of potential-based reward shaping (0 disables shaping)
+  shaping_gamma: 0.99                 # discount used by shaping potential (typically match agent gamma)
+
+# Weights & Biases Configuration
+wandb:
+  project: RL_Pacman                   # W&B project name used for logging runs
+  entity: mateo_haro_personal_projects # W&B account/team that owns the project
 
 # Environment Configuration
 environment:
-  num_envs: 256
-  stack_size: 4
-  resize_shape: [84, 84]
-  render_mode: null
-  # render_mode: 'human' #for visualization
+  num_envs: 256                       # number of parallel environment instances
+  stack_size: 4                       # number of consecutive frames stacked as one state
+  resize_shape: [84, 84]              # frame resolution after preprocessing [height, width]
+  render_mode: null                   # Gymnasium render mode (null disables rendering)
+  # render_mode: 'human'              # enable to visualize gameplay in a window
 
 # Agent Configuration
 agent:
-  memory_size: 100000
-  batch_size: 512
-  gamma: 0.99
-  epsilon: 1.0
-  epsilon_min: 0.1
-  epsilon_decay: 0.999
-  learning_rate: 0.00025 # default is 0.00025
-  target_update_frequency: 2000
-  tau: 0.0025                     # soft update coefficient for target network 0.005 is default best is 0.0025
-  target_update_mode: soft        # 'soft' uses tau, 'hard' uses target_update_frequency
-  demo_sample_prob: 0.01          # probability of sampling from demo buffer each batch (0 = disabled)
-  per_alpha: 0.6                  # priority exponent (0 = uniform replay)
-  per_beta_start: 0.4             # initial importance-sampling correction
-  per_beta_end: 1.0               # final importance-sampling correction
-  per_beta_steps: 1000000         # anneal beta over this many updates
-  per_eps: 1.0e-5                 # epsilon added to |TD error| for priorities
-  grad_clip_norm: -1.0             # max grad norm (<=0 disables clipping)
+  memory_size: 100000                  # replay buffer capacity (number of transitions)
+  batch_size: 512                      # minibatch size sampled for each training update
+  gamma: 0.99                          # discount factor for future rewards
+  epsilon: 1.0                         # initial epsilon for epsilon-greedy exploration
+  epsilon_min: 0.1                     # minimum epsilon value after decay
+  epsilon_decay: 0.9999      #0.999           # multiplicative epsilon decay applied over time
+  learning_rate: 0.00025               # optimizer learning rate
+  target_update_frequency: 5000        # hard target sync period in steps (used in hard mode)
+  tau: 0.001 #0.0025                          # soft target update coefficient (used in soft mode)
+  target_update_mode: soft             # target update strategy: 'soft' or 'hard'
+  demo_sample_prob: 0.01               # probability of sampling from demo buffer (0 disables demos)
+  per_alpha: 0.6                       # PER priority exponent (0 = uniform replay)
+  per_beta_start: 0.4                  # initial PER importance-sampling beta
+  per_beta_end: 1.0                    # final PER importance-sampling beta
+  per_beta_steps: 1000000              # number of updates used to anneal beta start->end
+  per_eps: 1.0e-5                      # small constant added to TD error when computing priority
+  grad_clip_norm: -15.0                # max gradient norm; <= 0 disables clipping

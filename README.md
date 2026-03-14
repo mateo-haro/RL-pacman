@@ -1,6 +1,15 @@
 # Deep Q-Learning for MsPacman
 
-This project implements a Double DQN agent with soft target updates to play MsPacman using PyTorch and Gymnasium.
+This project implements a Double DQN agent with soft target updates to play MsPacman using PyTorch and Gymnasium. It is inspired by the work of Minh et al. in [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602), which introduced DQN agents for Atari games.
+
+Since that original paper, several DQN improvements have been proposed. This repository incorporates a set of those enhancements on top of the baseline DQN setup, including:
+
+- Dueling network head (separate value and advantage streams)
+- Smooth target updates
+- Modern CNN architecture (deeper network with smaller kernels)
+- Imitation learning bootstrapping
+- Double DQN updates
+- Prioritized experience replay (PER)
 
 ## Setup
 
@@ -61,11 +70,13 @@ Control Pac-Man with the **arrow keys** (diagonals work by holding two arrows). 
 Transitions: 342  Episode: 2  Score: 180
 ```
 
-Demos are saved as compressed `.npz` files and can be loaded into training with `--demos`.
+Demos are saved as compressed `.npz` files and can be loaded into training with `--demos`. The current repo includes a `human_demos.npz` file that contains 3795 trainsitions.
 
-demos/human_demos.npz contains 3795 transitions.
 
 ## MsPacman Reward System
+
+The official scoring system doesn't implement stay alive score or dying penalty. That's why this are implemented as training feature that can be tuned in the hyperparameters. Furthermore, the rest of the scoring points can also be scaled for training and tuned in the hyperparameters.
+
 
 | Action                                  | Points  |
 |-----------------------------------------|---------|

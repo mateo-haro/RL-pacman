@@ -289,10 +289,11 @@ class DQNAgent:
 
         self.optimizer.zero_grad()
         loss.backward()
-        grad_norm = self._grad_norm()
+        grad_norm_pre_clip = self._grad_norm()
         if self.grad_clip_norm is not None and self.grad_clip_norm > 0:
             torch.nn.utils.clip_grad_norm_(
                 self.q_net.parameters(), self.grad_clip_norm)
+        grad_norm_post_clip = self._grad_norm()
         self.optimizer.step()
 
         td_errors_np = td_errors.detach().cpu().numpy()
@@ -320,7 +321,9 @@ class DQNAgent:
             "mean_td_error": td_errors.mean().item(),
             "mean_q": current_q_values.mean().item(),
             "max_q": all_q_values.max().item(),
-            "grad_norm": grad_norm,
+            "grad_norm": grad_norm_pre_clip,
+            "grad_norm_pre_clip": grad_norm_pre_clip,
+            "grad_norm_post_clip": grad_norm_post_clip,
             "mean_is_weight": is_weights.mean().item(),
             "min_is_weight": is_weights.min().item(),
             "max_is_weight": is_weights.max().item(),

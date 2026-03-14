@@ -11,16 +11,25 @@ class DQN(nn.Module):
             # nn.BatchNorm2d(16),
             # nn.ReLU(),
             nn.Conv2d(input_shape[0], 16, kernel_size=3, stride=2),
+            # nn.BatchNorm2d(16),
+            nn.GroupNorm(16, 16),
             nn.ReLU(),
             nn.Conv2d(16, 16, kernel_size=3, stride=1),
+            # nn.BatchNorm2d(16),
+            nn.GroupNorm(16, 16),
             nn.ReLU(),
             nn.Conv2d(16, 16, kernel_size=3, stride=1),
+            # nn.BatchNorm2d(16),
+            nn.GroupNorm(16, 16),
             nn.ReLU(),
             nn.Conv2d(16, 16, kernel_size=3, stride=1),
+            # nn.BatchNorm2d(16),
+            nn.GroupNorm(16, 16),
             nn.ReLU(),
             
             nn.Conv2d(16, 32, kernel_size=4, stride=2),
-            nn.BatchNorm2d(32),
+            # nn.BatchNorm2d(32),
+            nn.GroupNorm(32, 32),
             nn.ReLU(),
         )
         
@@ -35,13 +44,13 @@ class DQN(nn.Module):
 
         self.value_head = nn.Sequential(
             nn.Linear(conv_out_size, 256),
-            nn.BatchNorm1d(256),
+            # nn.BatchNorm1d(256),
             nn.ReLU(),
             nn.Linear(256, 1)
         )
         self.advantage_head = nn.Sequential(
             nn.Linear(conv_out_size, 256),
-            nn.BatchNorm1d(256),
+            # nn.BatchNorm1d(256),
             nn.ReLU(),
             nn.Linear(256, n_actions)
         )

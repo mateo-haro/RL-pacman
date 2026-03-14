@@ -122,7 +122,11 @@ def train(episodes, agent=None, envs=None, frame_skip=4,
           train_steps_per_sim_step=4, shaping_alpha=0.01,
           shaping_gamma=0.99, reward_scale=1.0,
           life_loss_penalty_scale=1.0, config=None):
-    wandb.init(project="RL_Pacman", entity="mateo_haro_personal_projects")
+    wandb_config = (config or {}).get("wandb", {})
+    wandb.init(
+        project=wandb_config.get("project"),
+        entity=wandb_config.get("entity"),
+    )
 
     # ---- history for plots ----
     history = {
@@ -137,6 +141,8 @@ def train(episodes, agent=None, envs=None, frame_skip=4,
     recent_mean_qs = deque(maxlen=MA_WINDOW)
     recent_max_qs = deque(maxlen=MA_WINDOW)
     recent_grad_norms = deque(maxlen=MA_WINDOW)
+    recent_grad_norms_pre_clip = deque(maxlen=MA_WINDOW)
+    recent_grad_norms_post_clip = deque(maxlen=MA_WINDOW)
     recent_mean_is_weights = deque(maxlen=MA_WINDOW)
     recent_min_is_weights = deque(maxlen=MA_WINDOW)
     recent_max_is_weights = deque(maxlen=MA_WINDOW)
@@ -232,6 +238,11 @@ def train(episodes, agent=None, envs=None, frame_skip=4,
             recent_max_qs.append(metrics["max_q"])
             if "grad_norm" in metrics:
                 recent_grad_norms.append(metrics["grad_norm"])
+            if "grad_norm_pre_clip" in metrics:
+                recent_grad_norms_pre_clip.append(metrics["grad_norm_pre_clip"])
+            if "grad_norm_post_clip" in metrics:
+                recent_grad_norms_post_clip.append(
+                    metrics["grad_norm_post_clip"])
             if "mean_is_weight" in metrics:
                 recent_mean_is_weights.append(metrics["mean_is_weight"])
                 recent_min_is_weights.append(metrics["min_is_weight"])
@@ -271,6 +282,12 @@ def train(episodes, agent=None, envs=None, frame_skip=4,
                 log_dict["train/max_q"] = max(recent_max_qs)
                 if recent_grad_norms:
                     log_dict["train/grad_norm"] = np.mean(recent_grad_norms)
+                if recent_grad_norms_pre_clip:
+                    log_dict["train/grad_norm_pre_clip"] = np.mean(
+                        recent_grad_norms_pre_clip)
+                if recent_grad_norms_post_clip:
+                    log_dict["train/grad_norm_post_clip"] = np.mean(
+                        recent_grad_norms_post_clip)
                 if recent_mean_is_weights:
                     log_dict["train/mean_is_weight"] = np.mean(
                         recent_mean_is_weights)
